@@ -14,18 +14,6 @@ public interface PlatformPlayer {
 
     String getName();
 
-    double getX();
-
-    double getY();
-
-    double getZ();
-
-    float getPitch();
-
-    float getYaw();
-
-    boolean isOnGround();
-
     int getPing();
 
     boolean isGliding();
@@ -44,11 +32,9 @@ public interface PlatformPlayer {
 
     @Nullable Integer getNoDamageTicks();
 
-    void setVelocity(Vector3d adjustedVelocity);
-
     Vector3d getVelocity();
 
-    double getJumpPower();
+    void setVelocity(Vector3d adjustedVelocity);
 
     BoundingBox getBoundingBox();
 
@@ -60,7 +46,4 @@ public interface PlatformPlayer {
     @Nullable User getUser();
 
     void setClientBrand(String brand);
-
-    String getClientBrand();
-    // Add more methods as needed
 }

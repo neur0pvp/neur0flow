@@ -19,11 +19,6 @@ public class OptimizedEventBus implements EventBus {
         registerMethods(listener, listener.getClass());
     }
 
-    @Override
-    public void registerStaticListeners(Class<?> clazz) {
-        registerMethods(null, clazz);
-    }
-
     private void registerMethods(Object instance, Class<?> clazz) {
         for (Method method : clazz.getDeclaredMethods()) {
             KBSyncEventHandler annotation = method.getAnnotation(KBSyncEventHandler.class);
@@ -53,11 +48,6 @@ public class OptimizedEventBus implements EventBus {
     @Override
     public void unregisterListeners(Object listener) {
         listenerMap.values().forEach(list -> list.removeIf(l -> l.instance == listener));
-    }
-
-    @Override
-    public void unregisterStaticListeners(Class<?> clazz) {
-        listenerMap.values().forEach(list -> list.removeIf(l -> l.instance == null && l.declaringClass == clazz));
     }
 
     @Override

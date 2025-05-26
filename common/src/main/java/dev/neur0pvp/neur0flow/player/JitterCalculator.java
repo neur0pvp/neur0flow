@@ -4,11 +4,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class JitterCalculator {
-    private final int SAMPLE_SIZE = 15;
     private final Queue<Long> pings = new LinkedList<>();
 
     public void addPing(long pingTime) {
         pings.offer(pingTime);
+        int SAMPLE_SIZE = 15;
         if (pings.size() > SAMPLE_SIZE) {
             pings.poll();
         }
@@ -40,17 +40,6 @@ public class JitterCalculator {
                 .mapToDouble(p -> Math.pow(p - mean, 2))
                 .average().orElse(0);
         double stdDev = Math.sqrt(variance);
-
-        // Calculate mean jitter
-        double meanJitter = 0;
-        Long prevPing = null;
-        for (Long ping : filteredPings) {
-            if (prevPing != null) {
-                meanJitter += Math.abs(ping - prevPing);
-            }
-            prevPing = ping;
-        }
-        meanJitter /= (filteredPings.size() - 1);
 
         // You can return different jitter metrics based on your needs
         return stdDev / 1_000_000.0; // or meanJitter, or both

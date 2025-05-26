@@ -4,7 +4,7 @@ import dev.neur0pvp.neur0flow.event.Event;
 
 public class ToggleOnOffEvent extends Event {
 
-    private boolean newEnabledState;
+    private final boolean newEnabledState;
 
     public ToggleOnOffEvent(boolean newEnabledState) {
         this.newEnabledState = newEnabledState;
@@ -14,9 +14,6 @@ public class ToggleOnOffEvent extends Event {
         return newEnabledState;
     }
 
-    public void setStatus(boolean newEnabledState) {
-        this.newEnabledState = newEnabledState;
-    }
     @Override
     public void setCancelled(boolean cancelled) {
         super.setCancelled(cancelled);

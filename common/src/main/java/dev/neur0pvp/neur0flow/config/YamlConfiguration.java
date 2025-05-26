@@ -45,8 +45,15 @@ public class YamlConfiguration {
 
     public void save() throws IOException {
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+            boolean status;
+            status = file.getParentFile().mkdirs();
+            if (!status) {
+                throw new IOException("Failed to create directories for file: " + file.getAbsolutePath());
+            }
+            status = file.createNewFile();
+            if (!status) {
+                throw new IOException("Failed to create file: " + file.getAbsolutePath());
+            }
         }
 
         String dump = yaml.dump(data);
@@ -62,27 +69,6 @@ public class YamlConfiguration {
 
         try (Writer writer = new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8)) {
             writer.write(dump);
-        }
-    }
-
-    private static class YamlElement {
-        String key;
-        String value;
-        int indent;
-        boolean isComment;
-        List<YamlElement> children = new ArrayList<>();
-
-        YamlElement(String line, int indent) {
-            this.indent = indent;
-            if (line.trim().startsWith("#")) {
-                this.isComment = true;
-                this.value = line;
-            } else {
-                this.isComment = false;
-                String[] parts = line.split(":", 2);
-                this.key = parts[0].trim();
-                this.value = parts.length > 1 ? parts[1].trim() : "";
-            }
         }
     }
 
@@ -173,5 +159,26 @@ public class YamlConfiguration {
             sb.append(' ');
         }
         return sb.toString();
+    }
+
+    private static class YamlElement {
+        String key;
+        String value;
+        int indent;
+        boolean isComment;
+        List<YamlElement> children = new ArrayList<>();
+
+        YamlElement(String line, int indent) {
+            this.indent = indent;
+            if (line.trim().startsWith("#")) {
+                this.isComment = true;
+                this.value = line;
+            } else {
+                this.isComment = false;
+                String[] parts = line.split(":", 2);
+                this.key = parts[0].trim();
+                this.value = parts.length > 1 ? parts[1].trim() : "";
+            }
+        }
     }
 }

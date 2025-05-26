@@ -1,7 +1,9 @@
 package dev.neur0pvp.neur0flow.event;
 
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public abstract class Event {
     @Setter
     private static EventBus eventBus;
@@ -16,7 +18,4 @@ public abstract class Event {
         }
     }
 
-    public boolean isCancelled() {
-        return cancelled;
-    }
 }

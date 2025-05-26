@@ -8,7 +8,9 @@ public class NumberConversions {
             return ((Number) object).longValue();
         } else {
             try {
-                return Long.parseLong(object.toString());
+                if (object != null) {
+                    return Long.parseLong(object.toString());
+                }
             } catch (NumberFormatException | NullPointerException ignored) {
             }
 
@@ -21,7 +23,9 @@ public class NumberConversions {
             return ((Number) object).intValue();
         } else {
             try {
-                return Integer.parseInt(object.toString());
+                if (object != null) {
+                    return Integer.parseInt(object.toString());
+                }
             } catch (NumberFormatException | NullPointerException ignored) {
             }
 

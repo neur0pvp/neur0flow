@@ -2,12 +2,10 @@ package dev.neur0pvp.neur0flow;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
+import dev.neur0pvp.neur0flow.event.KBSyncEventHandler;
+import dev.neur0pvp.neur0flow.event.events.ConfigReloadEvent;
 import dev.neur0pvp.neur0flow.listener.bukkit.BukkitPlayerDamageListener;
 import dev.neur0pvp.neur0flow.listener.bukkit.BukkitPlayerKnockbackListener;
-import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
-import dev.neur0pvp.neur0flow.event.events.ConfigReloadEvent;
-import dev.neur0pvp.neur0flow.event.KBSyncEventHandler;
-import dev.neur0pvp.neur0flow.listener.bukkit.*;
 import dev.neur0pvp.neur0flow.manager.ConfigManager;
 import dev.neur0pvp.neur0flow.permission.PermissionChecker;
 import dev.neur0pvp.neur0flow.permission.PluginPermissionChecker;
@@ -16,9 +14,8 @@ import dev.neur0pvp.neur0flow.scheduler.FoliaSchedulerAdapter;
 import dev.neur0pvp.neur0flow.sender.BukkitPlayerSelectorParser;
 import dev.neur0pvp.neur0flow.sender.BukkitSenderFactory;
 import dev.neur0pvp.neur0flow.sender.Sender;
-import dev.neur0pvp.neur0flow.stats.custom.BukkitStatsManager;
-import dev.neur0pvp.neur0flow.stats.custom.PluginJarHashProvider;
 import dev.neur0pvp.neur0flow.world.BukkitServer;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -33,7 +30,6 @@ import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.paper.LegacyPaperCommandManager;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -50,18 +46,14 @@ public class BukkitBase extends Base {
     private final JavaPlugin plugin;
     private final BukkitSenderFactory bukkitSenderFactory = new BukkitSenderFactory(this);
     private final PluginPermissionChecker permissionChecker = new PluginPermissionChecker();
-
-    private int playerUpdateInterval;
-
     private final MethodHandle tickRateMethodHandle;
+    private int playerUpdateInterval;
 
     public BukkitBase(JavaPlugin plugin) {
         this.plugin = plugin;
         super.configManager = new ConfigManager();
         super.playerSelectorParser = new BukkitPlayerSelectorParser<>();
-        super.statsManager = new BukkitStatsManager(plugin);
         super.platformServer = new BukkitServer();
-        super.pluginJarHashProvider = new PluginJarHashProvider(this.getClass().getProtectionDomain().getCodeSource().getLocation());
         this.playerUpdateInterval = this.getConfigManager().getConfigWrapper().getInt("entity_tick_intervals.player", 2);
 
         MethodHandle handle = null;
@@ -93,11 +85,6 @@ public class BukkitBase extends Base {
     @Override
     public File getDataFolder() {
         return this.plugin.getDataFolder();
-    }
-
-    @Override
-    public InputStream getResource(String filename) {
-        return this.plugin.getResource(filename);
     }
 
     @Override
@@ -142,13 +129,11 @@ public class BukkitBase extends Base {
                 ExecutionCoordinator.simpleCoordinator(),
                 bukkitSenderFactory
         );
-        if (commandManager instanceof LegacyPaperCommandManager) {
-            LegacyPaperCommandManager<Sender> legacyPaperCommandManager = (LegacyPaperCommandManager<Sender>) commandManager;
-            if (legacyPaperCommandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-                legacyPaperCommandManager.registerBrigadier();
-            } else if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
-                legacyPaperCommandManager.registerAsynchronousCompletions();
-            }
+        LegacyPaperCommandManager<Sender> legacyPaperCommandManager = (LegacyPaperCommandManager<Sender>) commandManager;
+        if (legacyPaperCommandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
+            legacyPaperCommandManager.registerBrigadier();
+        } else if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            legacyPaperCommandManager.registerAsynchronousCompletions();
         }
         super.registerCommands();
     }
@@ -196,10 +181,6 @@ public class BukkitBase extends Base {
         PluginManager pluginManager = this.plugin.getServer().getPluginManager();
         for (Listener listener : listeners)
             pluginManager.registerEvents(listener, this.plugin);
-    }
-
-    public BukkitSenderFactory getSenderFactory() {
-        return this.bukkitSenderFactory;
     }
 
     public void setUpdateIntervals() {

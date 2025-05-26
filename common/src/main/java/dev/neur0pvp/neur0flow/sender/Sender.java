@@ -33,13 +33,6 @@ public interface Sender {
     String getName();
 
     /**
-     * Gets a string representing the senders username, and their current location
-     * within the network.
-     *
-     * @return a friendly identifier for the sender
-     */
-
-    /**
      * Gets the sender's unique id.
      *
      * <p>See {@link #CONSOLE_UUID} for the console's UUID representation.</p>
@@ -66,27 +59,11 @@ public interface Sender {
     boolean hasPermission(String permission, boolean defaultIfUnset);
 
     /**
-     * Makes the sender perform a command.
-     *
-     * @param commandLine the command
-     */
-    void performCommand(String commandLine);
-
-    /**
      * Gets whether this sender is the console
      *
      * @return if the sender is the console
      */
     boolean isConsole();
-
-    /**
-     * Gets whether this sender is still valid & receiving messages.
-     *
-     * @return if this sender is valid
-     */
-    default boolean isValid() {
-        return true;
-    }
 
     Object getSender();
 }

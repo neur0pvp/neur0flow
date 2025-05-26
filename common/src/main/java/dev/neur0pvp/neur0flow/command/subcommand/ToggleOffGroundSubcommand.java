@@ -24,24 +24,22 @@ public class ToggleOffGroundSubcommand implements BuilderCommand {
 
     public void register(CommandManager<Sender> manager) {
         manager.command(
-            manager.commandBuilder("neur0flow", "kbsync", "kbs")
-                .literal("toggleoffground")
-                .permission((sender -> {
-                    final String permission = "neur0flow.toggleoffground";
-                    Predicate<Sender> senderPredicate = (s) -> {
-                        return s.hasPermission(permission, false);
-                    };
+                manager.commandBuilder("neur0flow", "kbsync", "kbs")
+                        .literal("toggleoffground")
+                        .permission((sender -> {
+                            final String permission = "neur0flow.toggleoffground";
+                            Predicate<Sender> senderPredicate = (s) -> s.hasPermission(permission, false);
 
-                    return PredicatePermission.of(senderPredicate).testPermission(sender);
-                }))
-                .handler(commandContext -> {
-                    offGroundSyncEnabled = !offGroundSyncEnabled;
-                    Base.INSTANCE.getConfigManager().getConfigWrapper().set("enable_offground_synchronization", offGroundSyncEnabled);
-                    Base.INSTANCE.getConfigManager().saveConfig();
-                    String message = ChatUtil.translateAlternateColorCodes('&',
-                            offGroundSyncEnabled ? offGroundSyncEnableMessage : offGroundSyncDisableMessage);
-                    commandContext.sender().sendMessage(message);
-                }));
+                            return PredicatePermission.of(senderPredicate).testPermission(sender);
+                        }))
+                        .handler(commandContext -> {
+                            offGroundSyncEnabled = !offGroundSyncEnabled;
+                            Base.INSTANCE.getConfigManager().getConfigWrapper().set("enable_offground_synchronization", offGroundSyncEnabled);
+                            Base.INSTANCE.getConfigManager().saveConfig();
+                            String message = ChatUtil.translateAlternateColorCodes('&',
+                                    offGroundSyncEnabled ? offGroundSyncEnableMessage : offGroundSyncDisableMessage);
+                            commandContext.sender().sendMessage(message);
+                        }));
     }
 
     @KBSyncEventHandler

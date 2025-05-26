@@ -43,9 +43,9 @@ public class AttributeChangeListener extends PacketListenerAbstract {
             // Get the attributes from the packet
             for (WrapperPlayServerUpdateAttributes.Property property : packet.getProperties()) {
                 // You can now check for specific attributes
-                if (property.getAttribute().equals(Attributes.GENERIC_GRAVITY)) {
+                if (property.getAttribute().equals(Attributes.GRAVITY)) {
                     onPlayerGravityChange(user, calculateValueWithModifiers(property));
-                } else if (property.getAttribute().equals(Attributes.GENERIC_KNOCKBACK_RESISTANCE)) {
+                } else if (property.getAttribute().equals(Attributes.KNOCKBACK_RESISTANCE)) {
                     onPlayerKnockBackChange(user, calculateValueWithModifiers(property));
                 }
             }
@@ -89,15 +89,15 @@ public class AttributeChangeListener extends PacketListenerAbstract {
     // Laggy players will just have to deal with being on the wrong gravity for a few hundred ms, too bad!
     public void onPlayerGravityChange(User user, double newGravity) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user);
-        if (playerData.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5)) {
+        if (playerData != null && playerData.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5)) {
             playerData.setGravityAttribute(newGravity);
-        } else {
-            currentGravity = defaultGravity;
         }
     }
 
     private void onPlayerKnockBackChange(User user, double newKnockbackResistance) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user);
-        playerData.setKnockbackResistanceAttribute(newKnockbackResistance);
+        if (playerData != null) {
+            playerData.setKnockbackResistanceAttribute(newKnockbackResistance);
+        }
     }
 }

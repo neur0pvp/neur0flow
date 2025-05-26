@@ -1,13 +1,13 @@
 package dev.neur0pvp.neur0flow.manager;
 
-import lombok.Getter;
-import lombok.Setter;
-import dev.neur0pvp.neur0flow.ConfigWrapper;
 import dev.neur0pvp.neur0flow.Base;
+import dev.neur0pvp.neur0flow.ConfigWrapper;
 import dev.neur0pvp.neur0flow.Platform;
 import dev.neur0pvp.neur0flow.config.YamlConfiguration;
 import dev.neur0pvp.neur0flow.runnable.PingRunnable;
 import dev.neur0pvp.neur0flow.scheduler.AbstractTaskHandle;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
@@ -139,9 +139,6 @@ public class ConfigManager {
             } catch (IOException e) {
                 Base.INSTANCE.getLogger().warning("Failed to backup old config: " + e.getMessage());
             }
-
-            // Store old values
-            Map<String, Object> oldValues = new HashMap<>(config);
 
             // Create new config with default values
             Base.INSTANCE.saveDefaultConfig();

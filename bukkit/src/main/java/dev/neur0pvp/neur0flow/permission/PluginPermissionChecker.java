@@ -6,17 +6,6 @@ import dev.neur0pvp.neur0flow.sender.Sender;
 import org.bukkit.command.CommandSender;
 
 public class PluginPermissionChecker implements PermissionChecker {
-
-//    Method getBukkitSenderMethod;
-//
-//    public PluginPermissionChecker() {
-//        try {
-//            getBukkitSenderMethod = CommandSourceStack.class.getMethod("getBukkitSender");
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     // Currently shouldn't be called
     @Override
     public boolean hasPermission(Object nativeType, String s, boolean defaultIfUnset) {

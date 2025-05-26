@@ -11,11 +11,6 @@ public class NettyTaskHandle implements AbstractTaskHandle {
     }
 
     @Override
-    public boolean getCancelled() {
-        return scheduledFuture.isCancelled();
-    }
-
-    @Override
     public void cancel() {
         scheduledFuture.cancel(true);
     }

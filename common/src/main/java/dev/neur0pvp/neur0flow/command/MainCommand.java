@@ -9,14 +9,12 @@ public class MainCommand implements BuilderCommand {
     public void register(CommandManager<Sender> manager) {
         manager.command(
                 manager.commandBuilder("neur0flow", "kbsync", "kbs")
-                        .handler(context -> {
-                            context.sender().sendMessage(
-                                    ChatUtil.translateAlternateColorCodes(
-                                            '&',
-                                            "&6This server is running the &eneur0flow &6plugin. &bhttps://github.com/neur0pvp/neur0flow"
-                                    )
-                            );
-                        })
+                        .handler(context -> context.sender().sendMessage(
+                                ChatUtil.translateAlternateColorCodes(
+                                        '&',
+                                        "&6This server is running the &eneur0flow &6plugin. &bhttps://github.com/neur0pvp/neur0flow"
+                                )
+                        ))
         );
     }
 }

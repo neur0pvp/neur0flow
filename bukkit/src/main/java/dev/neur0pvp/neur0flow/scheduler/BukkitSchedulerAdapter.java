@@ -14,28 +14,13 @@ public class BukkitSchedulerAdapter implements SchedulerAdapter {
     }
 
     @Override
-    public AbstractTaskHandle runTask(Runnable task) {
-        return new BukkitTaskHandle(scheduler.runTask(plugin, task));
+    public void runTask(Runnable task) {
+        scheduler.runTask(plugin, task);
     }
 
     @Override
-    public AbstractTaskHandle runTaskAsynchronously(Runnable task) {
-        return new BukkitTaskHandle(scheduler.runTaskAsynchronously(plugin, task));
-    }
-
-    @Override
-    public AbstractTaskHandle runTaskLater(Runnable task, long delayTicks) {
-        return new BukkitTaskHandle(scheduler.runTaskLater(plugin, task, delayTicks));
-    }
-
-    @Override
-    public AbstractTaskHandle runTaskTimer(Runnable task, long delayTicks, long periodTicks) {
-        return new BukkitTaskHandle(scheduler.runTaskTimer(plugin, task, delayTicks, periodTicks));
-    }
-
-    @Override
-    public AbstractTaskHandle runTaskLaterAsynchronously(Runnable task, long delay) {
-        return new BukkitTaskHandle(scheduler.runTaskLaterAsynchronously(plugin, task, delay));
+    public void runTaskAsynchronously(Runnable task) {
+        scheduler.runTaskAsynchronously(plugin, task);
     }
 
     @Override
@@ -43,9 +28,4 @@ public class BukkitSchedulerAdapter implements SchedulerAdapter {
         return new BukkitTaskHandle(scheduler.runTaskTimerAsynchronously(plugin, task, delay, period));
     }
 
-    // Bukkit should take care of this for us automatically
-    @Override
-    public void shutdown() {
-
-    }
 }

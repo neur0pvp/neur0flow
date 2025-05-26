@@ -58,19 +58,8 @@ public final class AbstractSender<T> implements Sender {
     }
 
     @Override
-    public void performCommand(String commandLine) {
-        this.factory.performCommand(this.sender, commandLine);
-    }
-
-    @Override
     public boolean isConsole() {
         return this.isConsole;
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
-//        return isConsole() || this.plugin.getBootstrap().isPlayerOnline(this.uniqueId);
     }
 
     @Override

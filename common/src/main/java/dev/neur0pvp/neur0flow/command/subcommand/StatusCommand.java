@@ -4,8 +4,8 @@ import dev.neur0pvp.neur0flow.Base;
 import dev.neur0pvp.neur0flow.ConfigWrapper;
 import dev.neur0pvp.neur0flow.command.generic.BuilderCommand;
 import dev.neur0pvp.neur0flow.command.generic.PlayerSelector;
-import dev.neur0pvp.neur0flow.event.events.ConfigReloadEvent;
 import dev.neur0pvp.neur0flow.event.KBSyncEventHandler;
+import dev.neur0pvp.neur0flow.event.events.ConfigReloadEvent;
 import dev.neur0pvp.neur0flow.manager.ConfigManager;
 import dev.neur0pvp.neur0flow.manager.PlayerDataManager;
 import dev.neur0pvp.neur0flow.player.PlatformPlayer;
@@ -42,9 +42,7 @@ public class StatusCommand implements BuilderCommand {
                         .literal("status")
                         .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
                         .permission((sender -> {
-                            Predicate<Sender> senderPredicate = (s) -> {
-                                return s.hasPermission(STATUS_SELF_PERMISSION, true) || sender.hasPermission(STATUS_OTHER_PERMISSION, false);
-                            };
+                            Predicate<Sender> senderPredicate = (s) -> s.hasPermission(STATUS_SELF_PERMISSION, true) || sender.hasPermission(STATUS_OTHER_PERMISSION, false);
 
                             return PredicatePermission.of(senderPredicate).testPermission(sender);
                         }))
@@ -57,19 +55,19 @@ public class StatusCommand implements BuilderCommand {
                                 sender.sendMessage(
                                         ChatUtil.translateAlternateColorCodes('&',
                                                 (globalStatus ? globalStatusEnabledMessage : globalStatusDisabledMessage))
-                                        + "\n"
-                                        + ChatUtil.translateAlternateColorCodes('&',
+                                                + "\n"
+                                                + ChatUtil.translateAlternateColorCodes('&',
                                                 ToggleOffGroundSubcommand.offGroundSyncEnabled ? globalOffGroundStatusEnabledMessage : globalOffGroundStatusDisabledMessage)
                                 );
 
-                                    if (sender.hasPermission(STATUS_SELF_PERMISSION, true)) {
-                                        // Show player status for the sender (no target specified)
-                                        if (!sender.isConsole()) {
-                                            showPlayerStatus(sender, Base.INSTANCE.getPlatformServer().getPlayer(sender.getUniqueId()));
-                                        }
-                                    } else {
-                                        sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noSelfPermissionMessage));
+                                if (sender.hasPermission(STATUS_SELF_PERMISSION, true)) {
+                                    // Show player status for the sender (no target specified)
+                                    if (!sender.isConsole()) {
+                                        showPlayerStatus(sender, Base.INSTANCE.getPlatformServer().getPlayer(sender.getUniqueId()));
                                     }
+                                } else {
+                                    sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noSelfPermissionMessage));
+                                }
                             } else {
                                 if (sender.hasPermission(STATUS_OTHER_PERMISSION, true)) {
                                     PlatformPlayer target = targetSelector.getSinglePlayer();
@@ -98,7 +96,7 @@ public class StatusCommand implements BuilderCommand {
         if (!globalStatus) {
             statusMessage = playerStatusGlobalDisabledMessage.replace("%player%", target.getName());
         } else {
-           statusMessage = (playerStatus ? this.playerStatusEnabledMessage : this.playerStatusDisabledMessage).replace("%player%", target.getName());
+            statusMessage = (playerStatus ? this.playerStatusEnabledMessage : this.playerStatusDisabledMessage).replace("%player%", target.getName());
         }
         sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', statusMessage));
     }

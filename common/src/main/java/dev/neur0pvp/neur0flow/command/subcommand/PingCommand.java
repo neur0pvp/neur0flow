@@ -14,6 +14,7 @@ import dev.neur0pvp.neur0flow.sender.Sender;
 import dev.neur0pvp.neur0flow.util.ChatUtil;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.permission.PredicatePermission;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -37,33 +38,32 @@ public class PingCommand implements BuilderCommand {
 
     public void register(CommandManager<Sender> manager) {
         manager.command(
-            manager.commandBuilder("neur0flow", "kbsync", "kbs")
-                .permission((sender -> {
-                    final String permission = "neur0flow.ping";
-                    Predicate<Sender> senderPredicate = (s) -> {
-                        return s.hasPermission(permission, true);
-                    };
+                manager.commandBuilder("neur0flow", "kbsync", "kbs")
+                        .permission((sender -> {
+                            final String permission = "neur0flow.ping";
+                            Predicate<Sender> senderPredicate = (s) -> s.hasPermission(permission, true);
 
-                    return PredicatePermission.of(senderPredicate).testPermission(sender);
-                }))
-                .literal("ping")
-                .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
-                .handler(context -> {
-                    PlayerSelector targetSelector = context.getOrDefault("target", null);
+                            return PredicatePermission.of(senderPredicate).testPermission(sender);
+                        }))
+                        .literal("ping")
+                        .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
+                        .handler(context -> {
+                            PlayerSelector targetSelector = context.getOrDefault("target", null);
 
-                    if (targetSelector == null) {
-                        if (context.sender().isConsole()) {
-                            context.sender().sendMessage(ChatUtil.translateAlternateColorCodes('&', mustSpecifyPlayerFromConsoleMessage));
-                        } else {
-                            context.sender().sendMessage(getPingMessage(context.sender().getUniqueId(), context.sender().getName(), null, null));
-                        }
-                    } else {
-                        context.sender().sendMessage(getPingMessage(context.sender().getUniqueId(), context.sender().getName(), targetSelector.getSinglePlayer().getUUID(), targetSelector.getSinglePlayer().getName()));
-                    }
-                })
+                            if (targetSelector == null) {
+                                if (context.sender().isConsole()) {
+                                    context.sender().sendMessage(ChatUtil.translateAlternateColorCodes('&', mustSpecifyPlayerFromConsoleMessage));
+                                } else {
+                                    context.sender().sendMessage(getPingMessage(context.sender().getUniqueId(), context.sender().getName(), null, null));
+                                }
+                            } else {
+                                context.sender().sendMessage(getPingMessage(context.sender().getUniqueId(), context.sender().getName(), targetSelector.getSinglePlayer().getUUID(), targetSelector.getSinglePlayer().getName()));
+                            }
+                        })
         );
         Base.INSTANCE.getEventBus().registerListeners(this);
     }
+
     private void loadConfig() {
         ConfigWrapper configWrapper = configManager.getConfigWrapper();
         pingSelfAvailableMessage = configWrapper.getString("messages.ping.self.available",
@@ -103,6 +103,12 @@ public class PingCommand implements BuilderCommand {
         if (playerData == null)
             return ChatUtil.translateAlternateColorCodes('&', message);
 
+        String rawReturnString = getRawReturnString(playerData, isSelf);
+
+        return ChatUtil.translateAlternateColorCodes('&', rawReturnString);
+    }
+
+    private @NotNull String getRawReturnString(PlayerData playerData, boolean isSelf) {
         String rawReturnString;
         if (playerData.getPing() == null) {
             rawReturnString = isSelf ? pingSelfUnavailableMessage : pingOtherUnavailableMessage;
@@ -118,8 +124,7 @@ public class PingCommand implements BuilderCommand {
                 .replace("%jitter%", String.format("%.3f", playerData.getJitter()))
                 .replace("%spike%", String.valueOf(playerData.isSpike()))
                 .replace("%compensated%", String.format("%.3f", playerData.getCompensatedPing()));
-
-        return ChatUtil.translateAlternateColorCodes('&', rawReturnString);
+        return rawReturnString;
     }
 
     @KBSyncEventHandler

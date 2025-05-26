@@ -1,17 +1,9 @@
 package dev.neur0pvp.neur0flow.scheduler;
 
 public interface SchedulerAdapter {
-    AbstractTaskHandle runTask(Runnable task);
+    void runTask(Runnable task);
 
-    AbstractTaskHandle runTaskAsynchronously(Runnable task);
-
-    AbstractTaskHandle runTaskLater(Runnable task, long delayTicks);
-
-    AbstractTaskHandle runTaskTimer(Runnable task, long delayTicks, long periodTicks);
-
-    AbstractTaskHandle runTaskLaterAsynchronously(Runnable task, long delay);
+    void runTaskAsynchronously(Runnable task);
 
     AbstractTaskHandle runTaskTimerAsynchronously(Runnable task, long delay, long period);
-
-    void shutdown();
 }

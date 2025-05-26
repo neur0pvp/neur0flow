@@ -16,7 +16,8 @@ public abstract class PlayerKnockbackListener {
             return;
 
         User user = victim.getUser();
-        if (user == null) return; // Prevent errors with players disconnecting while this is running (or with fake player?)
+        if (user == null)
+            return; // Prevent errors with players disconnecting while this is running (or with fake player?)
 
         PlayerData victimPlayerData = PlayerDataManager.getPlayerData(user);
         if (victimPlayerData == null)
@@ -44,8 +45,7 @@ public abstract class PlayerKnockbackListener {
                 return;
 
             adjustedVelocity = velocity.withY(victimPlayerData.getVerticalVelocity()); // Should be impossible to produce a NPE in this context
-        }
-        else if (victimPlayerData.isOffGroundSyncEnabled())
+        } else if (victimPlayerData.isOffGroundSyncEnabled())
             adjustedVelocity = velocity.withY(victimPlayerData.getCompensatedOffGroundVelocity());
         else
             return;

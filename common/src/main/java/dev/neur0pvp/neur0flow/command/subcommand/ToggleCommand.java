@@ -1,4 +1,5 @@
 package dev.neur0pvp.neur0flow.command.subcommand;
+
 import com.github.retrooper.packetevents.protocol.player.User;
 import dev.neur0pvp.neur0flow.Base;
 import dev.neur0pvp.neur0flow.ConfigWrapper;
@@ -33,65 +34,6 @@ public class ToggleCommand implements BuilderCommand {
     public ToggleCommand() {
         loadConfig();
     }
-
-    private void loadConfig() {
-        ConfigWrapper configWrapper = configManager.getConfigWrapper();
-        noGlobalPermissionMessage = configWrapper.getString("messages.toggle.permission.no_global",
-                "&cYou don't have permission to toggle the global setting.");
-        noSelfPermissionMessage = configWrapper.getString("messages.toggle.permission.no_self",
-                "&cYou do not have permission to toggle your knockback.");
-        noOtherPermissionMessage = configWrapper.getString("messages.toggle.permission.no_other",
-                "&cYou do not have permission to toggle the knockback of other player's.");
-        serverDisabledMessage = configWrapper.getString("messages.toggle.server_disabled",
-                "&cneur0flow is currently disabled on this server. Contact your server administrator for more information.");
-    }
-
-    @Override
-    public void register(CommandManager<Sender> manager) {
-        manager.command(
-            manager.commandBuilder("neur0flow", "kbsync", "kbs")
-                .literal("toggle")
-                .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
-                    .permission((sender -> {
-                        Predicate<Sender> senderPredicate = (s) -> {
-                            return s.hasPermission(TOGGLE_GLOBAL_PERMISSION, false)
-                                    || sender.hasPermission(TOGGLE_SELF_PERMISSION, false)
-                                    || sender.hasPermission(TOGGLE_OTHER_PERMISSION, false);
-                        };
-
-                        return PredicatePermission.of(senderPredicate).testPermission(sender);
-                    }))
-                .handler(context -> {
-                    Sender sender = context.sender();
-                    PlayerSelector targetSelector = context.getOrDefault("target", null);
-                    if (targetSelector == null) {
-                        // Global toggle
-                        if (permissionChecker.hasPermission(sender, TOGGLE_GLOBAL_PERMISSION, false)) {
-                            toggleGlobalKnockback(sender);
-                        } else {
-                            sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noGlobalPermissionMessage));
-                        }
-                    } else {
-                        PlatformPlayer target = targetSelector.getSinglePlayer();
-                        boolean senderIsTarget = sender.getUniqueId() == target.getUUID();
-                        if (!senderIsTarget && !permissionChecker.hasPermission(sender, TOGGLE_OTHER_PERMISSION, false)) {
-                            sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noOtherPermissionMessage));
-                            return;
-                        } else if (senderIsTarget && !permissionChecker.hasPermission(sender, TOGGLE_SELF_PERMISSION, true)) {
-                            sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noSelfPermissionMessage));
-                            return;
-                        }
-
-                        if (!configManager.isToggled()) {
-                            sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', serverDisabledMessage));
-                        } else {
-                            togglePlayerKnockback(target, sender);
-                        }
-                    }
-                })
-        );
-    }
-
 
     private static void toggleGlobalKnockback(Sender sender) {
         boolean toggledState = !configManager.isToggled();
@@ -130,14 +72,19 @@ public class ToggleCommand implements BuilderCommand {
             return;
         }
 
-        boolean hasPlayerData = PlayerDataManager.containsPlayerData(user);
+        boolean hasPlayerData = false;
+        if (user != null) {
+            hasPlayerData = PlayerDataManager.containsPlayerData(user);
+        }
         if (hasPlayerData) {
             if (CombatManager.getPlayers().contains(user)) {
                 CombatManager.removePlayer(user);
             }
             PlayerDataManager.removePlayerData(user);
         } else {
-            PlayerDataManager.addPlayerData(user, target);
+            if (user != null) {
+                PlayerDataManager.addPlayerData(user, target);
+            }
         }
 
         String message = ChatUtil.translateAlternateColorCodes('&',
@@ -146,5 +93,61 @@ public class ToggleCommand implements BuilderCommand {
         ).replace("%player%", target.getName());
 
         sender.sendMessage(message);
+    }
+
+    private void loadConfig() {
+        ConfigWrapper configWrapper = configManager.getConfigWrapper();
+        noGlobalPermissionMessage = configWrapper.getString("messages.toggle.permission.no_global",
+                "&cYou don't have permission to toggle the global setting.");
+        noSelfPermissionMessage = configWrapper.getString("messages.toggle.permission.no_self",
+                "&cYou do not have permission to toggle your knockback.");
+        noOtherPermissionMessage = configWrapper.getString("messages.toggle.permission.no_other",
+                "&cYou do not have permission to toggle the knockback of other player's.");
+        serverDisabledMessage = configWrapper.getString("messages.toggle.server_disabled",
+                "&cneur0flow is currently disabled on this server. Contact your server administrator for more information.");
+    }
+
+    @Override
+    public void register(CommandManager<Sender> manager) {
+        manager.command(
+                manager.commandBuilder("neur0flow", "kbsync", "kbs")
+                        .literal("toggle")
+                        .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
+                        .permission((sender -> {
+                            Predicate<Sender> senderPredicate = (s) -> s.hasPermission(TOGGLE_GLOBAL_PERMISSION, false)
+                                    || sender.hasPermission(TOGGLE_SELF_PERMISSION, false)
+                                    || sender.hasPermission(TOGGLE_OTHER_PERMISSION, false);
+
+                            return PredicatePermission.of(senderPredicate).testPermission(sender);
+                        }))
+                        .handler(context -> {
+                            Sender sender = context.sender();
+                            PlayerSelector targetSelector = context.getOrDefault("target", null);
+                            if (targetSelector == null) {
+                                // Global toggle
+                                if (permissionChecker.hasPermission(sender, TOGGLE_GLOBAL_PERMISSION, false)) {
+                                    toggleGlobalKnockback(sender);
+                                } else {
+                                    sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noGlobalPermissionMessage));
+                                }
+                            } else {
+                                PlatformPlayer target = targetSelector.getSinglePlayer();
+                                boolean senderIsTarget = sender.getUniqueId() == target.getUUID();
+                                if (!senderIsTarget && !permissionChecker.hasPermission(sender, TOGGLE_OTHER_PERMISSION, false)) {
+                                    sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noOtherPermissionMessage));
+                                    return;
+                                } else if (senderIsTarget && !permissionChecker.hasPermission(sender, TOGGLE_SELF_PERMISSION, true)) {
+                                    sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', noSelfPermissionMessage));
+                                    return;
+                                }
+
+                                if (!configManager.isToggled()) {
+                                    sender.sendMessage(ChatUtil.translateAlternateColorCodes('&', serverDisabledMessage));
+                                } else {
+                                    togglePlayerKnockback(target, sender);
+                                }
+                            }
+                        })
+        );
     }
 }

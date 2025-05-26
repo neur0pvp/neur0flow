@@ -12,8 +12,6 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerKeepAlive;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPing;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowConfirmation;
-import lombok.Getter;
-import lombok.Setter;
 import dev.neur0pvp.neur0flow.Base;
 import dev.neur0pvp.neur0flow.command.subcommand.ToggleOffGroundSubcommand;
 import dev.neur0pvp.neur0flow.event.KBSyncEventHandler;
@@ -28,27 +26,27 @@ import dev.neur0pvp.neur0flow.util.data.Pair;
 import dev.neur0pvp.neur0flow.world.PlatformWorld;
 import dev.neur0pvp.neur0flow.world.raytrace.FluidHandling;
 import dev.neur0pvp.neur0flow.world.raytrace.RayTraceResult;
+import io.netty.channel.Channel;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
-import io.netty.channel.Channel;
-import java.util.*;
+import java.util.Queue;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 @Getter
 public class PlayerData {
 
+    public static final long PING_OFFSET = 25;
     // Please read the GitHub FAQ before adjusting.
     private static final short MAIN_THREAD_TRANSACTION_ID = 31407;
     private static final short NETTY_THREAD_TRANSACTION_ID = 31408;
-    public static final long PING_OFFSET = 25;
-
     private static Field playerField;
-
-    public final Queue<Pair<Integer, Long>> transactionsSent = new ConcurrentLinkedQueue<>();
-    public final Queue<Pair<Long, Long>> keepaliveMap = new ConcurrentLinkedQueue<>();
 
     static {
         try {
@@ -67,21 +65,36 @@ public class PlayerData {
         playerField.setAccessible(true); // May not be needed since it's already public
     }
 
+    public final Queue<Pair<Integer, Long>> transactionsSent = new ConcurrentLinkedQueue<>();
+    public final Queue<Pair<Long, Long>> keepaliveMap = new ConcurrentLinkedQueue<>();
     public final User user;
     private final PlatformPlayer platformPlayer;
     private final UUID uuid;
-    @NotNull private final Random random = new Random();
+    @NotNull
+    private final Random random = new Random();
+    @Getter
+    private final JitterCalculator jitterCalculator = new JitterCalculator();
+    @NotNull
+    private final Object combatTaskLock = new Object(); // Lock object for synchronization
     public long lastKeepAliveID = 0;
-    @Getter private final JitterCalculator jitterCalculator = new JitterCalculator();
-    @Setter private double jitter;
-    @Nullable private AbstractTaskHandle combatTask;
-    @NotNull private final Object combatTaskLock = new Object(); // Lock object for synchronization
-    @Nullable @Setter private Double ping, previousPing;
-    @Nullable @Setter private Double verticalVelocity;
-    @Nullable @Setter private Integer lastDamageTicks;
-    @Setter private double gravityAttribute = 0.08;
-    @Setter private double knockbackResistanceAttribute = 0.0;
     public PingStrategy pingStrategy; // this is currently shared between all instances, but can be made per-player later
+    @Setter
+    private double jitter;
+    @Nullable
+    private AbstractTaskHandle combatTask;
+    @Nullable
+    @Setter
+    private Double ping, previousPing;
+    @Nullable
+    @Setter
+    private Double verticalVelocity;
+    @Nullable
+    @Setter
+    private Integer lastDamageTicks;
+    @Setter
+    private double gravityAttribute = 0.08;
+    @Setter
+    private double knockbackResistanceAttribute = 0.0;
 
     public PlayerData(User user, PlatformPlayer platformPlayer) {
         this.uuid = platformPlayer.getUUID();
@@ -128,38 +141,36 @@ public class PlayerData {
     public void sendPing(boolean async) {
         if (user == null || user.getEncoderState() != ConnectionState.PLAY) return;
 
-       switch (pingStrategy) {
-           case KEEPALIVE:
-               long keepAliveID = async ? NETTY_THREAD_TRANSACTION_ID : MAIN_THREAD_TRANSACTION_ID;
-               if (async) {
-                   ChannelHelper.runInEventLoop(user.getChannel(), () -> {
-                       // We call sendPacket instead of writePacket because it flushes immediately
-                       // Making our time measurement more accurate since we don't call, System.nanoTime(), wait until flush
-                       // And then actually send packet
-                       user.sendPacket(new WrapperPlayServerKeepAlive(keepAliveID));
-                   });
-               } else {
-                   user.sendPacket(new WrapperPlayServerKeepAlive(keepAliveID));
-               }
-               break;
-           case TRANSACTION:
-               PacketWrapper<?> packet;
-               short pingTransactionID = async ? NETTY_THREAD_TRANSACTION_ID : MAIN_THREAD_TRANSACTION_ID;
-               if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_17)) {
-                   packet = new WrapperPlayServerPing(pingTransactionID);
-               } else {
-                   packet = new WrapperPlayServerWindowConfirmation((byte) 0, pingTransactionID, false);
-               }
+        switch (pingStrategy) {
+            case KEEPALIVE:
+                long keepAliveID = async ? NETTY_THREAD_TRANSACTION_ID : MAIN_THREAD_TRANSACTION_ID;
+                if (async) {
+                    ChannelHelper.runInEventLoop(user.getChannel(), () -> {
+                        // We call sendPacket instead of writePacket because it flushes immediately
+                        // Making our time measurement more accurate since we don't call, System.nanoTime(), wait until flush
+                        // And then actually send packet
+                        user.sendPacket(new WrapperPlayServerKeepAlive(keepAliveID));
+                    });
+                } else {
+                    user.sendPacket(new WrapperPlayServerKeepAlive(keepAliveID));
+                }
+                break;
+            case TRANSACTION:
+                PacketWrapper<?> packet;
+                short pingTransactionID = async ? NETTY_THREAD_TRANSACTION_ID : MAIN_THREAD_TRANSACTION_ID;
+                if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_17)) {
+                    packet = new WrapperPlayServerPing(pingTransactionID);
+                } else {
+                    packet = new WrapperPlayServerWindowConfirmation((byte) 0, pingTransactionID, false);
+                }
 
-               if (async) {
-                   ChannelHelper.runInEventLoop(user.getChannel(), () -> {
-                       user.writePacket(packet);
-                   });
-               } else {
-                   user.writePacket(packet);
-               }
-               break;
-       }
+                if (async) {
+                    ChannelHelper.runInEventLoop(user.getChannel(), () -> user.writePacket(packet));
+                } else {
+                    user.writePacket(packet);
+                }
+                break;
+        }
     }
 
     /**
@@ -194,6 +205,7 @@ public class PlayerData {
 
     /**
      * Gets whether or not offGroundSynchronization is enabled for the player.
+     *
      * @return <code>true</code> if enabled; <code>false</code> otherwise.
      */
     public boolean isOffGroundSyncEnabled() {
@@ -245,7 +257,7 @@ public class PlayerData {
 
         double adjustment = 0.01; // To ensure the bounding box isn't clipping inside a wall
 
-        return new Vector3d[] {
+        return new Vector3d[]{
                 new Vector3d(boundingBox.getMinX() + adjustment, location.getY(), boundingBox.getMinZ() + adjustment),
                 new Vector3d(boundingBox.getMinX() + adjustment, location.getY(), boundingBox.getMaxZ() - adjustment),
                 new Vector3d(boundingBox.getMaxX() - adjustment, location.getY(), boundingBox.getMinZ() + adjustment),
@@ -290,6 +302,7 @@ public class PlayerData {
     /**
      * Cancels the combatTask quit task. This prevents quitCombat() from being called later against a new combat task
      * Or against a player that has disconnected already
+     *
      * @param async Whether we are already in the players netty thread
      */
     public void quitCombat(boolean async) {
@@ -324,10 +337,6 @@ public class PlayerData {
         return ver;
     }
 
-    public long getKeepAliveSendTime() {
-        return lastKeepAliveID;
-    }
-
     public boolean didWeSendThatPacket(long receivedId) {
         return receivedId == NETTY_THREAD_TRANSACTION_ID || receivedId == MAIN_THREAD_TRANSACTION_ID;
     }
@@ -345,7 +354,7 @@ public class PlayerData {
         this.pingStrategy = loadPingStrategy(event.getConfigManager());
     }
 
-    private PingStrategy loadPingStrategy(ConfigManager  configManager) {
+    private PingStrategy loadPingStrategy(ConfigManager configManager) {
         String pingStrategy = configManager.getConfigWrapper().getString("ping_strategy", "KEEPALIVE");
         switch (pingStrategy) {
             case "KEEPALIVE":

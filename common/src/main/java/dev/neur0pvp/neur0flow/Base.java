@@ -1,26 +1,20 @@
 package dev.neur0pvp.neur0flow;
 
 import com.github.retrooper.packetevents.PacketEvents;
-import dev.neur0pvp.neur0flow.listener.packetevents.*;
-import lombok.Getter;
 import dev.neur0pvp.neur0flow.command.MainCommand;
 import dev.neur0pvp.neur0flow.command.generic.AbstractPlayerSelectorParser;
 import dev.neur0pvp.neur0flow.command.generic.BuilderCommand;
-import dev.neur0pvp.neur0flow.command.subcommand.PingCommand;
-import dev.neur0pvp.neur0flow.command.subcommand.ReloadCommand;
-import dev.neur0pvp.neur0flow.command.subcommand.StatusCommand;
-import dev.neur0pvp.neur0flow.command.subcommand.ToggleCommand;
-import dev.neur0pvp.neur0flow.command.subcommand.ToggleOffGroundSubcommand;
+import dev.neur0pvp.neur0flow.command.subcommand.*;
 import dev.neur0pvp.neur0flow.event.Event;
 import dev.neur0pvp.neur0flow.event.EventBus;
 import dev.neur0pvp.neur0flow.event.OptimizedEventBus;
+import dev.neur0pvp.neur0flow.listener.packetevents.*;
 import dev.neur0pvp.neur0flow.manager.ConfigManager;
 import dev.neur0pvp.neur0flow.permission.PermissionChecker;
 import dev.neur0pvp.neur0flow.scheduler.SchedulerAdapter;
 import dev.neur0pvp.neur0flow.sender.Sender;
-import dev.neur0pvp.neur0flow.stats.custom.PluginJarHashProvider;
-import dev.neur0pvp.neur0flow.stats.custom.StatsManager;
 import dev.neur0pvp.neur0flow.world.PlatformServer;
+import lombok.Getter;
 import org.incendo.cloud.CommandManager;
 import org.kohsuke.github.GitHub;
 
@@ -38,16 +32,12 @@ import java.util.logging.Logger;
 public abstract class Base {
     public static Logger LOGGER;
     public static Base INSTANCE;
-
+    protected final EventBus eventBus = new OptimizedEventBus();
     private final Platform platform;
-    protected StatsManager statsManager;
     protected PlatformServer platformServer;
-    protected PluginJarHashProvider pluginJarHashProvider;
     protected SchedulerAdapter scheduler;
     protected ConfigManager configManager;
     protected CommandManager<Sender> commandManager;
-    protected final EventBus eventBus = new OptimizedEventBus();
-
     protected AbstractPlayerSelectorParser<Sender> playerSelectorParser;
 
     protected Base() {
@@ -81,8 +71,6 @@ public abstract class Base {
 
     public abstract File getDataFolder();
 
-    public abstract InputStream getResource(String filename);
-
     public abstract void load();
 
     public void enable() {
@@ -94,7 +82,6 @@ public abstract class Base {
         registerCommands();
         initializeScheduler();
         configManager.loadConfig(false);
-        statsManager.init();
         checkForUpdates();
     }
 
@@ -153,7 +140,7 @@ public abstract class Base {
                     LOGGER.warning("You are running an older version. A new update is available for download at: https://github.com/neur0pvp/neur0flow/releases/latest");
                     configManager.setUpdateAvailable(true);
                 } else if (comparisonResult > 0) {
-                    if (currentVersion.contains("-dev")) 
+                    if (currentVersion.contains("-dev"))
                         LOGGER.info("You are running a development build newer than the latest release.");
                     else {
                         LOGGER.info("You are running a version newer than the latest release.");
@@ -169,9 +156,6 @@ public abstract class Base {
 
                     if (hasRestartScript())
                         scheduler.runTask(this::restartServer);
-                    else {
-                        // Yeah
-                    }
                 }
             } catch (Exception e) {
                 LOGGER.severe("Failed to check for updates: " + e.getMessage());
@@ -252,7 +236,7 @@ public abstract class Base {
         if (part1.equals(part2)) return 0;
         if (part1.startsWith("dev")) return part2.startsWith("dev") ? 0 : -1;
         if (part2.startsWith("dev")) return 1;
-        if (part1.equals("SNAPSHOT")) return part2.equals("SNAPSHOT") ? 0 : -1;
+        if (part1.equals("SNAPSHOT")) return -1;
         if (part2.equals("SNAPSHOT")) return 1;
         return part1.compareTo(part2);
     }
