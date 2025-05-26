@@ -5,7 +5,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.3" apply false
 }
 
-val fullVersion = "1.3.5"
+val fullVersion = "0.2.0"
 val snapshot = true
 val githubRepo = System.getenv("GITHUB_REPOSITORY") ?: project.findProperty("githubRepo").toString()
 
