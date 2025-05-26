@@ -13,7 +13,7 @@ public class MainCommand implements BuilderCommand {
                             context.sender().sendMessage(
                                     ChatUtil.translateAlternateColorCodes(
                                             '&',
-                                            "&6This server is running the &eneur0flow &6plugin. &bhttps://github.com/CASELOAD7000/knockback-sync"
+                                            "&6This server is running the &eneur0flow &6plugin. &bhttps://github.com/neur0pvp/neur0flow"
                                     )
                             );
                         })

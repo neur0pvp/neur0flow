@@ -38,7 +38,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
 
-    shadeThisThing(implementation("org.kohsuke:github-api:1.326")!!)
+    shadeThisThing(implementation("org.kohsuke:github-api:1.327")!!)
     if (shadePE) {
         shadeThisThing(implementation("com.github.retrooper:packetevents-spigot:2.8.0-SNAPSHOT")!!)
     } else {

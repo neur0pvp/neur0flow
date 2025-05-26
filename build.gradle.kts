@@ -3,7 +3,6 @@ import java.io.ByteArrayOutputStream
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.3" apply false
-    id("fabric-loom") version "1.10.5" apply false
 }
 
 val fullVersion = "1.3.5"
@@ -47,11 +46,7 @@ allprojects {
         maven("https://repo.codemc.io/repository/maven-releases/")
         maven("https://repo.opencollab.dev/maven-snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
-        maven(url = "https://maven.fabricmc.net/") {
-            name = "Fabric"
-        }
         maven("https://libraries.minecraft.net/")
-        maven("https://maven.neoforged.net/releases")
         maven("https://repo.codemc.io/repository/maven-snapshots/")
     }
 }

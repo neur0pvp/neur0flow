@@ -9,7 +9,6 @@ on:
       - main
       - merge
       - dev
-      - fabric-experimental-gradle
 
 jobs:
   build:
@@ -39,19 +38,6 @@ jobs:
         uses: einaregilsson/build-number@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      # Temporary tasks so built jar works because PacketEvents won't merge my fixes for their broken fabric support
-      - name: Clone Axionize's PacketEvents Repository
-        run: |
-          git clone -b fix/fabric-events https://github.com/Axionize/packetevents.git packetevents
-          cd packetevents
-          echo "Cloned PacketEvents repository"
-
-      - name: Build and Publish PacketEvents to Maven Local
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          build-root-directory: packetevents
-          arguments: publishToMavenLocal
 
       - name: Update version in build.gradle.kts
         id: update_version
@@ -88,9 +74,6 @@ jobs:
           # Calculate hash for the lite JAR
           BUKKIT_LITE_HASH=$(sha256sum bukkit/build/libs/neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
           echo "BUKKIT_LITE_HASH=$BUKKIT_LITE_HASH" >> $GITHUB_ENV
-          # Calculate hash for the lite JAR
-          FABRIC_HASH=$(sha256sum fabric/build/libs/neur0flow-fabric-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
-          echo "FABRIC_HASH=$FABRIC_HASH" >> $GITHUB_ENV
 
       # Download, update, and re-upload dev-builds.txt
       - name: Update dev-builds.txt
@@ -116,7 +99,6 @@ jobs:
           # Add new hashes if they don't exist
           add_hash_if_new "${{ env.BUKKIT_HASH }}"
           add_hash_if_new "${{ env.BUKKIT_LITE_HASH }}"
-          add_hash_if_new "${{ env.FABRIC_HASH }}"
           
           # Check if the file has changed
           if cmp -s dev-builds.txt dev-builds.txt.original; then
@@ -159,64 +141,3 @@ jobs:
           name: neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar
           path: bukkit/build/libs/neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar
           retention-days: 90
-
-      - name: Upload Fabric Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: neur0flow-fabric-${{ env.NEW_VERSION }}.jar
-          path: fabric/build/libs/neur0flow-fabric-${{ env.NEW_VERSION }}.jar
-          retention-days: 90
-
-      - uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: ${{ vars.MODRINTH_ID  }}
-          modrinth-featured: true
-          modrinth-unfeature-mode: subset
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          files: |
-            bukkit/build/libs/neur0flow-bukkit-${{ env.NEW_VERSION }}.jar
-            bukkit/build/libs/neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar
-
-          name: neur0flow-${{ env.NEW_VERSION }}
-          version: ${{ env.NEW_VERSION }}
-          version-type: alpha
-
-          loaders: |
-            bukkit
-            spigot
-            paper
-            folia
-            purpur
-
-          game-versions: |
-            >=1.12.2
-
-          retry-attempts: 2
-          retry-delay: 10000
-          fail-mode: fail
-
-      - uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: ${{ vars.MODRINTH_ID }}
-          modrinth-featured: true
-          modrinth-unfeature-mode: subset
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          files: |
-            fabric/build/libs/neur0flow-fabric-${{ env.NEW_VERSION }}.jar
-
-          name: neur0flow-${{ env.NEW_VERSION }}
-          version: ${{ env.NEW_VERSION }}
-          version-type: alpha
-
-          loaders: |
-            fabric
-
-          game-versions: |
-            1.21.4
-            1.21.5
-
-          retry-attempts: 2
-          retry-delay: 10000
-          fail-mode: fail

@@ -14,7 +14,6 @@ import dev.neur0pvp.neur0flow.command.subcommand.ToggleOffGroundSubcommand;
 import dev.neur0pvp.neur0flow.event.Event;
 import dev.neur0pvp.neur0flow.event.EventBus;
 import dev.neur0pvp.neur0flow.event.OptimizedEventBus;
-import dev.neur0pvp.neur0flow.listener.packetevents.*;
 import dev.neur0pvp.neur0flow.manager.ConfigManager;
 import dev.neur0pvp.neur0flow.permission.PermissionChecker;
 import dev.neur0pvp.neur0flow.scheduler.SchedulerAdapter;
@@ -35,20 +34,20 @@ import java.util.*;
 import java.util.logging.Logger;
 
 // Base class
+@Getter
 public abstract class Base {
     public static Logger LOGGER;
     public static Base INSTANCE;
 
-    @Getter private final Platform platform;
-    @Getter protected StatsManager statsManager;
-    @Getter protected PlatformServer platformServer;
-    @Getter protected PluginJarHashProvider pluginJarHashProvider;
-    @Getter protected SchedulerAdapter scheduler;
-    @Getter protected ConfigManager configManager;
-    @Getter protected CommandManager<Sender> commandManager;
-    @Getter protected final EventBus eventBus = new OptimizedEventBus();
+    private final Platform platform;
+    protected StatsManager statsManager;
+    protected PlatformServer platformServer;
+    protected PluginJarHashProvider pluginJarHashProvider;
+    protected SchedulerAdapter scheduler;
+    protected ConfigManager configManager;
+    protected CommandManager<Sender> commandManager;
+    protected final EventBus eventBus = new OptimizedEventBus();
 
-    @Getter
     protected AbstractPlayerSelectorParser<Sender> playerSelectorParser;
 
     protected Base() {
@@ -60,7 +59,6 @@ public abstract class Base {
         final Map<String, Platform> platforms = Collections.unmodifiableMap(new HashMap<String, Platform>() {{
             put("io.papermc.paper.threadedregions.RegionizedServer", Platform.FOLIA);
             put("org.bukkit.Bukkit", Platform.BUKKIT);
-            put("net.fabricmc.loader.api.FabricLoader", Platform.FABRIC);
         }});
 
         return platforms.entrySet().stream()
@@ -143,7 +141,7 @@ public abstract class Base {
         scheduler.runTaskAsynchronously(() -> {
             try {
                 GitHub github = GitHub.connectAnonymously();
-                String latestVersion = github.getRepository("CASELOAD7000/knockback-sync")
+                String latestVersion = github.getRepository("neur0pvp/neur0flow")
                         .getLatestRelease()
                         .getTagName();
 
@@ -152,7 +150,7 @@ public abstract class Base {
                 int comparisonResult = compareVersions(currentVersion, latestVersion);
 
                 if (comparisonResult < 0) {
-                    LOGGER.warning("You are running an older version. A new update is available for download at: https://github.com/CASELOAD7000/knockback-sync/releases/latest");
+                    LOGGER.warning("You are running an older version. A new update is available for download at: https://github.com/neur0pvp/neur0flow/releases/latest");
                     configManager.setUpdateAvailable(true);
                 } else if (comparisonResult > 0) {
                     if (currentVersion.contains("-dev")) 
@@ -194,12 +192,11 @@ public abstract class Base {
 
     private byte[] downloadLatestRelease(GitHub github) {
         try {
-            return github.getRepository("CASELOAD7000/knockback-sync")
+            return github.getRepository("neur0pvp/neur0flow")
                     .getLatestRelease()
                     .getAssets().stream()
                     .filter(asset -> asset.getName().endsWith(".jar")
-                            && asset.getName().contains(platform.equals(Platform.FABRIC)
-                            ? "fabric" : "bukkit"))
+                            && asset.getName().contains("bukkit"))
                     .findFirst()
                     .map(asset -> {
                         try (InputStream inputStream = new URL(asset.getBrowserDownloadUrl()).openStream()) {

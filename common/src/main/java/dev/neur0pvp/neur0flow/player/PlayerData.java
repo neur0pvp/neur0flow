@@ -58,10 +58,6 @@ public class PlayerData {
                     Class<?> bukkitPlayerClass = Class.forName("dev.neur0pvp.neur0flow.player.BukkitPlayer");
                     playerField = bukkitPlayerClass.getDeclaredField("bukkitPlayer");
                     break;
-                case FABRIC:
-                    Class<?> fabricPlayerClass = Class.forName("dev.neur0pvp.neur0flow.player.FabricPlayer");
-                    playerField = fabricPlayerClass.getDeclaredField("fabricPlayer");
-                    break;
                 default:
                     throw new IllegalStateException("Unexpected platform: " + Base.INSTANCE.getPlatform());
             }

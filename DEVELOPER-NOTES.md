@@ -13,7 +13,6 @@
       - Commands use incendio's `cloud` command system. All you have to do to add platform support is to create a CommandManager and call register(). 
     - Handling Events
     - Gathering Statistics
-- `fabric` contains code for latest fabric version (currently 1.21)
 - `bukkit` contains bukkit-specific code
 
 If you want to add support for a new platform, simply make a new submodule and implement the interfaces for.

@@ -33,7 +33,7 @@ public class PacketPlayerJoinQuit extends PacketListenerAbstract {
         if (Base.INSTANCE.getConfigManager().isUpdateAvailable() && Base.INSTANCE.getConfigManager().isNotifyUpdate() && Base.INSTANCE.getPermissionChecker().hasPermission(player, "neur0flow.update"))
             player.sendMessage(ChatUtil.translateAlternateColorCodes(
                     '&',
-                    "&6An updated version of &eneur0flow &6is now available for download at: &bhttps://github.com/CASELOAD7000/knockback-sync/releases/latest"
+                    "&6An updated version of &eneur0flow &6is now available for download at: &bhttps://github.com/neur0pvp/neur0flow/releases/latest"
             ));
     }
 

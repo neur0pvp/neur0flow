@@ -19,7 +19,7 @@ dependencies {
     }
 
     implementation("org.yaml:snakeyaml:2.0")
-    implementation("org.kohsuke:github-api:1.326") {
+    implementation("org.kohsuke:github-api:1.327") {
         exclude(group = "commons-io", module = "commons-io")
         exclude(group = "org.apache.commons", module = "commons-lang3")
     }
