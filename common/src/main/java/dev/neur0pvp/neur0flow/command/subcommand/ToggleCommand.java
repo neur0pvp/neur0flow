@@ -21,9 +21,9 @@ public class ToggleCommand implements BuilderCommand {
 
     private static final ConfigManager configManager = Base.INSTANCE.getConfigManager();
     private static final PermissionChecker permissionChecker = Base.INSTANCE.getPermissionChecker();
-    private static final String TOGGLE_GLOBAL_PERMISSION = "knockbacksync.toggle.global";
-    private static final String TOGGLE_SELF_PERMISSION = "knockbacksync.toggle.self";
-    private static final String TOGGLE_OTHER_PERMISSION = "knockbacksync.toggle.other";
+    private static final String TOGGLE_GLOBAL_PERMISSION = "neur0flow.toggle.global";
+    private static final String TOGGLE_SELF_PERMISSION = "neur0flow.toggle.self";
+    private static final String TOGGLE_OTHER_PERMISSION = "neur0flow.toggle.other";
 
     private String noGlobalPermissionMessage;
     private String noSelfPermissionMessage;
@@ -43,13 +43,13 @@ public class ToggleCommand implements BuilderCommand {
         noOtherPermissionMessage = configWrapper.getString("messages.toggle.permission.no_other",
                 "&cYou do not have permission to toggle the knockback of other player's.");
         serverDisabledMessage = configWrapper.getString("messages.toggle.server_disabled",
-                "&cKnockbacksync is currently disabled on this server. Contact your server administrator for more information.");
+                "&cneur0flow is currently disabled on this server. Contact your server administrator for more information.");
     }
 
     @Override
     public void register(CommandManager<Sender> manager) {
         manager.command(
-            manager.commandBuilder("knockbacksync", "kbsync", "kbs")
+            manager.commandBuilder("neur0flow", "kbsync", "kbs")
                 .literal("toggle")
                 .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
                     .permission((sender -> {

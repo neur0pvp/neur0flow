@@ -8,7 +8,7 @@ import org.incendo.cloud.CommandManager;
 public class MainCommand implements BuilderCommand {
     public void register(CommandManager<Sender> manager) {
         manager.command(
-                manager.commandBuilder("knockbacksync", "kbsync", "kbs")
+                manager.commandBuilder("neur0flow", "kbsync", "kbs")
                         .handler(context -> {
                             context.sender().sendMessage(
                                     ChatUtil.translateAlternateColorCodes(

@@ -83,13 +83,13 @@ jobs:
       - name: Calculate Hashes
         run: |
           # Calculate hash for the original JAR
-          BUKKIT_HASH=$(sha256sum bukkit/build/libs/knockbacksync-bukkit-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
+          BUKKIT_HASH=$(sha256sum bukkit/build/libs/neur0flow-bukkit-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
           echo "BUKKIT_HASH=$BUKKIT_HASH" >> $GITHUB_ENV
           # Calculate hash for the lite JAR
-          BUKKIT_LITE_HASH=$(sha256sum bukkit/build/libs/knockbacksync-bukkit-lite-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
+          BUKKIT_LITE_HASH=$(sha256sum bukkit/build/libs/neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
           echo "BUKKIT_LITE_HASH=$BUKKIT_LITE_HASH" >> $GITHUB_ENV
           # Calculate hash for the lite JAR
-          FABRIC_HASH=$(sha256sum fabric/build/libs/knockbacksync-fabric-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
+          FABRIC_HASH=$(sha256sum fabric/build/libs/neur0flow-fabric-${{ env.NEW_VERSION }}.jar | awk '{print $1}')
           echo "FABRIC_HASH=$FABRIC_HASH" >> $GITHUB_ENV
 
       # Download, update, and re-upload dev-builds.txt
@@ -149,22 +149,22 @@ jobs:
       - name: Upload Bukkit Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: knockbacksync-bukkit-${{ env.NEW_VERSION }}.jar
-          path: bukkit/build/libs/knockbacksync-bukkit-${{ env.NEW_VERSION }}.jar
+          name: neur0flow-bukkit-${{ env.NEW_VERSION }}.jar
+          path: bukkit/build/libs/neur0flow-bukkit-${{ env.NEW_VERSION }}.jar
           retention-days: 90
 
       - name: Upload Bukkit Lite Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: knockbacksync-bukkit-lite-${{ env.NEW_VERSION }}.jar
-          path: bukkit/build/libs/knockbacksync-bukkit-lite-${{ env.NEW_VERSION }}.jar
+          name: neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar
+          path: bukkit/build/libs/neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar
           retention-days: 90
 
       - name: Upload Fabric Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: knockbacksync-fabric-${{ env.NEW_VERSION }}.jar
-          path: fabric/build/libs/knockbacksync-fabric-${{ env.NEW_VERSION }}.jar
+          name: neur0flow-fabric-${{ env.NEW_VERSION }}.jar
+          path: fabric/build/libs/neur0flow-fabric-${{ env.NEW_VERSION }}.jar
           retention-days: 90
 
       - uses: Kir-Antipov/mc-publish@v3.3
@@ -175,8 +175,8 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           files: |
-            bukkit/build/libs/knockbacksync-bukkit-${{ env.NEW_VERSION }}.jar
-            bukkit/build/libs/knockbacksync-bukkit-lite-${{ env.NEW_VERSION }}.jar
+            bukkit/build/libs/neur0flow-bukkit-${{ env.NEW_VERSION }}.jar
+            bukkit/build/libs/neur0flow-bukkit-lite-${{ env.NEW_VERSION }}.jar
 
           name: neur0flow-${{ env.NEW_VERSION }}
           version: ${{ env.NEW_VERSION }}
@@ -204,7 +204,7 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           files: |
-            fabric/build/libs/knockbacksync-fabric-${{ env.NEW_VERSION }}.jar
+            fabric/build/libs/neur0flow-fabric-${{ env.NEW_VERSION }}.jar
 
           name: neur0flow-${{ env.NEW_VERSION }}
           version: ${{ env.NEW_VERSION }}

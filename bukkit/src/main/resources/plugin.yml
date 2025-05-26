@@ -7,17 +7,17 @@ description: Synchronizes player knockback for smoother gameplay.
 folia-supported: true
 depends: ${depends}
 permissions:
-  knockbacksync.update:
+  neur0flow.update:
     default: op
-  knockbacksync.toggle.global:
+  neur0flow.toggle.global:
     default: op
-  knockbacksync.toggle.other:
+  neur0flow.toggle.other:
     default: op
-  knockbacksync.toggle.self:
+  neur0flow.toggle.self:
     default: op
-  knockbacksync.ping:
+  neur0flow.ping:
     default: op
-  knockbacksync.reload:
+  neur0flow.reload:
     default: op
-  knockbacksync.toggleoffground:
+  neur0flow.toggleoffground:
     default: op

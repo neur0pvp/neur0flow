@@ -6,12 +6,12 @@
 config_version: 7
 
 # Plugin enabled state
-# Toggleable using /knockbacksync toggle
-# Required permission: knockbacksync.toggle
+# Toggleable using /neur0flow toggle
+# Required permission: neur0flow.toggle
 enabled: true
 
 # Notify staff about update availability
-# Required permission: knockbacksync.update
+# Required permission: neur0flow.update
 notify_updates: true
 
 # Automatically updates the plugin
@@ -206,7 +206,7 @@ messages:
       enable: "&aSuccessfully enabled neur0flow for %player%."
       disable: "&aSuccessfully &cdisabled &aneur0flow for %player%."
       ineligible: "&c%player% is ineligible for neur0flow. If you believe this is in error, please contact your server administrators."
-  server_disabled: "&cKnockbacksync is currently disabled on this server. Contact your server administrator for more information."
+  server_disabled: "&cneur0flow is currently disabled on this server. Contact your server administrator for more information."
   offground:
     enable: "&aSuccessfully enabled offground synchronization."
     disable: "&cSuccessfully disabled offground synchronization."
@@ -224,10 +224,10 @@ messages:
       disabled: "&e%player%'s neur0flow status: &cDisabled"
       global_disabled: "&e%player%'s neur0flow status: &cDisabled (Global toggle is off)"
     permission:
-      no_self: "&cYou do not have permission to check your knockbacksync status."
+      no_self: "&cYou do not have permission to check your neur0flow status."
       no_other: "&cYou do not have permission to check the status of other players!"
   console:
-    must_specify_player: "&cYou must specify a player to use the knockbacksync ping command from the console."
+    must_specify_player: "&cYou must specify a player to use the neur0flow ping command from the console."
   disabled:
     self: "&cKnockback synchronization is currently disabled for you!"
     target: "&cKnockback synchronization is currently disabled for the target player."

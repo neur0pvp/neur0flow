@@ -19,10 +19,10 @@ public class ReloadCommand implements BuilderCommand {
 
     public void register(CommandManager<Sender> manager) {
         manager.command(
-            manager.commandBuilder("knockbacksync", "kbsync", "kbs")
+            manager.commandBuilder("neur0flow", "kbsync", "kbs")
                     .literal("reload")
                     .permission((sender -> {
-                        final String permission = "knockbacksync.reload";
+                        final String permission = "neur0flow.reload";
                         Predicate<Sender> senderPredicate = (s) -> {
                             return s.hasPermission(permission, false);
                         };

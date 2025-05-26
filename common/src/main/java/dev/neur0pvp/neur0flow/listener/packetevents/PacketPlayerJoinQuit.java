@@ -30,7 +30,7 @@ public class PacketPlayerJoinQuit extends PacketListenerAbstract {
     public void onPlayerJoin(User user, PlatformPlayer player) {
         PlayerDataManager.addPlayerData(user, player);
 
-        if (Base.INSTANCE.getConfigManager().isUpdateAvailable() && Base.INSTANCE.getConfigManager().isNotifyUpdate() && Base.INSTANCE.getPermissionChecker().hasPermission(player, "knockbacksync.update"))
+        if (Base.INSTANCE.getConfigManager().isUpdateAvailable() && Base.INSTANCE.getConfigManager().isNotifyUpdate() && Base.INSTANCE.getPermissionChecker().hasPermission(player, "neur0flow.update"))
             player.sendMessage(ChatUtil.translateAlternateColorCodes(
                     '&',
                     "&6An updated version of &eneur0flow &6is now available for download at: &bhttps://github.com/CASELOAD7000/knockback-sync/releases/latest"

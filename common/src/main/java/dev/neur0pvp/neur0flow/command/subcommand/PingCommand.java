@@ -37,9 +37,9 @@ public class PingCommand implements BuilderCommand {
 
     public void register(CommandManager<Sender> manager) {
         manager.command(
-            manager.commandBuilder("knockbacksync", "kbsync", "kbs")
+            manager.commandBuilder("neur0flow", "kbsync", "kbs")
                 .permission((sender -> {
-                    final String permission = "knockbacksync.ping";
+                    final String permission = "neur0flow.ping";
                     Predicate<Sender> senderPredicate = (s) -> {
                         return s.hasPermission(permission, true);
                     };
@@ -75,7 +75,7 @@ public class PingCommand implements BuilderCommand {
         pingOtherUnavailableMessage = configWrapper.getString("messages.ping.other.unavailable",
                 "Accurate ping unavailable. %player%'s estimated ping is &b%ping%&rms.");
         mustSpecifyPlayerFromConsoleMessage = configWrapper.getString("messages.console.must_specify_player",
-                "&cYou must specify a player to use the knockbacksync ping command from the console.");
+                "&cYou must specify a player to use the neur0flow ping command from the console.");
         knockbacksyncDisabledForYouMessage = configWrapper.getString("messages.disabled.self",
                 "&cKnockback synchronization is currently disabled for you!");
         knockbacksyncDisabledForTargetMessage = configWrapper.getString("messages.disabled.target",

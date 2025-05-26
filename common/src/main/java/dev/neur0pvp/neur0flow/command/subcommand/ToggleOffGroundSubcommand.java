@@ -24,10 +24,10 @@ public class ToggleOffGroundSubcommand implements BuilderCommand {
 
     public void register(CommandManager<Sender> manager) {
         manager.command(
-            manager.commandBuilder("knockbacksync", "kbsync", "kbs")
+            manager.commandBuilder("neur0flow", "kbsync", "kbs")
                 .literal("toggleoffground")
                 .permission((sender -> {
-                    final String permission = "knockbacksync.toggleoffground";
+                    final String permission = "neur0flow.toggleoffground";
                     Predicate<Sender> senderPredicate = (s) -> {
                         return s.hasPermission(permission, false);
                     };

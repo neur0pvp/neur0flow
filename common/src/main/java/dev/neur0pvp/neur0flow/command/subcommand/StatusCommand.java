@@ -19,8 +19,8 @@ import java.util.function.Predicate;
 public class StatusCommand implements BuilderCommand {
 
     private static final ConfigManager configManager = Base.INSTANCE.getConfigManager();
-    private static final String STATUS_SELF_PERMISSION = "knockbacksync.status.self";
-    private static final String STATUS_OTHER_PERMISSION = "knockbacksync.status.other";
+    private static final String STATUS_SELF_PERMISSION = "neur0flow.status.self";
+    private static final String STATUS_OTHER_PERMISSION = "neur0flow.status.other";
 
     private String globalStatusEnabledMessage;
     private String globalStatusDisabledMessage;
@@ -38,7 +38,7 @@ public class StatusCommand implements BuilderCommand {
 
     public void register(CommandManager<Sender> manager) {
         manager.command(
-                manager.commandBuilder("knockbacksync", "kbsync", "kbs")
+                manager.commandBuilder("neur0flow", "kbsync", "kbs")
                         .literal("status")
                         .optional("target", Base.INSTANCE.getPlayerSelectorParser().descriptor())
                         .permission((sender -> {
@@ -125,7 +125,7 @@ public class StatusCommand implements BuilderCommand {
         this.playerStatusGlobalDisabledMessage = config.getString("messages.status.player.global_disabled",
                 "&e%player%'s neur0flow status: &cDisabled (Global toggle is off)");
         this.noSelfPermissionMessage = config.getString("messages.status.permission.no_self",
-                "&cYou do not have permission to check your knockbacksync status.");
+                "&cYou do not have permission to check your neur0flow status.");
         this.noOtherPermissionMessage = config.getString("messages.status.permission.no_other",
                 "&cYou do not have permission to check the status of other players!");
     }
