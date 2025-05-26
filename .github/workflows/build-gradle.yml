@@ -178,7 +178,7 @@ jobs:
             bukkit/build/libs/knockbacksync-bukkit-${{ env.NEW_VERSION }}.jar
             bukkit/build/libs/knockbacksync-bukkit-lite-${{ env.NEW_VERSION }}.jar
 
-          name: KnockbackSync-${{ env.NEW_VERSION }}
+          name: neur0flow-${{ env.NEW_VERSION }}
           version: ${{ env.NEW_VERSION }}
           version-type: alpha
 
@@ -206,7 +206,7 @@ jobs:
           files: |
             fabric/build/libs/knockbacksync-fabric-${{ env.NEW_VERSION }}.jar
 
-          name: KnockbackSync-${{ env.NEW_VERSION }}
+          name: neur0flow-${{ env.NEW_VERSION }}
           version: ${{ env.NEW_VERSION }}
           version-type: alpha
 

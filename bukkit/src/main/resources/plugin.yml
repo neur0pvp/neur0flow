@@ -1,6 +1,6 @@
-name: KnockbackSync
+name: neur0flow
 version: ${version}
-main: me.caseload.knockbacksync.BukkitLoaderPlugin
+main: dev.neur0pvp.neur0flow.BukkitLoaderPlugin
 api-version: '1.13' # We actually support 1.12.2, api-version was added later though
 authors: [ Caseload, Axionize ]
 description: Synchronizes player knockback for smoother gameplay.

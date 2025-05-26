@@ -35,7 +35,7 @@ allprojects {
         return "$commitHash-SNAPSHOT"
     }
 
-    group = "me.caseload.knockbacksync"
+    group = "dev.neur0pvp.neur0flow"
     version = "$fullVersion${getVersionMeta(true)}"
     ext["versionNoHash"] = "$fullVersion${getVersionMeta(false)}"
     ext["githubRepo"] = githubRepo

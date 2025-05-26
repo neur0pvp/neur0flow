@@ -1,5 +1,5 @@
 #########################################
-#      KnockbackSync Configuration      #
+#      neur0flow Configuration      #
 #########################################
 
 # Do not modify!
@@ -188,41 +188,41 @@ entity_tick_intervals:
 messages:
   toggle:
     global:
-      enable: "&aSuccessfully enabled KnockbackSync."
-      disable: "&cSuccessfully disabled KnockbackSync."
+      enable: "&aSuccessfully enabled neur0flow."
+      disable: "&cSuccessfully disabled neur0flow."
     player:
-      enable: "&aSuccessfully enabled KnockbackSync for %player%."
-      disable: "&aSuccessfully &cdisabled &aKnockbackSync for %player%."
-      ineligible: "&c%player% is ineligible for KnockbackSync. If you believe this is in error, please contact your server administrators."
+      enable: "&aSuccessfully enabled neur0flow for %player%."
+      disable: "&aSuccessfully &cdisabled &aneur0flow for %player%."
+      ineligible: "&c%player% is ineligible for neur0flow. If you believe this is in error, please contact your server administrators."
       disconnected-while-executing-command: "&c%player% disconnected while executing command."
     permission:
       no_global: "&cYou don't have permission to toggle the global setting."
       no_self: "&cYou do not have permission to toggle your knockback."
       no_other: "&cYou do not have permission to toggle the knockback of other player's."
     self:
-      enable: "&aSuccessfully enabled KnockbackSync."
-      disable: "&cSuccessfully disabled KnockbackSync."
+      enable: "&aSuccessfully enabled neur0flow."
+      disable: "&cSuccessfully disabled neur0flow."
     other:
-      enable: "&aSuccessfully enabled KnockbackSync for %player%."
-      disable: "&aSuccessfully &cdisabled &aKnockbackSync for %player%."
-      ineligible: "&c%player% is ineligible for KnockbackSync. If you believe this is in error, please contact your server administrators."
+      enable: "&aSuccessfully enabled neur0flow for %player%."
+      disable: "&aSuccessfully &cdisabled &aneur0flow for %player%."
+      ineligible: "&c%player% is ineligible for neur0flow. If you believe this is in error, please contact your server administrators."
   server_disabled: "&cKnockbacksync is currently disabled on this server. Contact your server administrator for more information."
   offground:
     enable: "&aSuccessfully enabled offground synchronization."
     disable: "&cSuccessfully disabled offground synchronization."
   reload:
-    success: "&aSuccessfully reloaded KnockbackSync."
+    success: "&aSuccessfully reloaded neur0flow."
   status:
     global:
-      enabled: "&eKnockbackSync global status: &aEnabled"
-      disabled: "&eKnockbackSync global status: &cDisabled"
+      enabled: "&eneur0flow global status: &aEnabled"
+      disabled: "&eneur0flow global status: &cDisabled"
     offground:
-      enabled: "&eKnockbackSync off-ground status: &aEnabled"
-      disabled: "&eKnockbackSync off-ground status: &cDisabled"
+      enabled: "&eneur0flow off-ground status: &aEnabled"
+      disabled: "&eneur0flow off-ground status: &cDisabled"
     player:
-      enabled: "&e%player%'s KnockbackSync status: &aEnabled"
-      disabled: "&e%player%'s KnockbackSync status: &cDisabled"
-      global_disabled: "&e%player%'s KnockbackSync status: &cDisabled (Global toggle is off)"
+      enabled: "&e%player%'s neur0flow status: &aEnabled"
+      disabled: "&e%player%'s neur0flow status: &cDisabled"
+      global_disabled: "&e%player%'s neur0flow status: &cDisabled (Global toggle is off)"
     permission:
       no_self: "&cYou do not have permission to check your knockbacksync status."
       no_other: "&cYou do not have permission to check the status of other players!"
